@@ -11,7 +11,7 @@ logging.basicConfig(
 LOGGER = logging.getLogger(__name__)
 
 # --- 2. CONFIG SETTINGS ---
-TOKEN = "7544040994:AAEqP_G1S4-XXXXXXXX" # <--- APNA TOKEN
+TOKEN = "8568309223:AAHWam_aBpk1K6pD29bf75nzwbEyoSFqxBU" # <--- APNA TOKEN
 MONGO_URL = "mongodb+srv://season74_db_user:pass%401220@cluster0.nuxjsu4.mongodb.net/?retryWrites=true&w=majority"
 OWNER_ID = 8629880263
 api_id = 34967775
