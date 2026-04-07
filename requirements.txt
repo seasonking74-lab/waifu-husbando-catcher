@@ -2,3 +2,5 @@ python-telegram-bot
 motor
 dnspython
 aiohttp
+pyrogram
+tgcrypto
