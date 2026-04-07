@@ -12,15 +12,12 @@ async def gupload(update: Update, context: CallbackContext):
 
     try:
         args = update.message.caption.replace("/gupload ", "").split()
-        name = args[0].replace("-", " ").title()
-        anime = args[1].replace("-", " ").title()
-        r_name = RARITY_MAP.get(args[2], "⚪️ Common")
+        name, anime, r_id = args[0].replace("-", " "), args[1].replace("-", " "), args[2]
+        r_name = RARITY_MAP.get(r_id, "⚪️ Common")
         
         char_id = str(random.randint(1000, 9999))
-        await collection.insert_one({
-            "id": char_id, "name": name, "anime": anime, "rarity": r_name, "img_url": update.message.photo[-1].file_id
-        })
-        await p_msg.edit_text(f"➲ **ADDED BY»** —{update.effective_user.first_name}\n➥ **Character ID:** {char_id}\n➥ **Rarity:** {r_name}")
+        await collection.insert_one({"id": char_id, "name": name, "anime": anime, "rarity": r_name, "img_url": update.message.photo[-1].file_id})
+        await p_msg.edit_text(f"➲ **ADDED BY»** —{update.effective_user.first_name}\n➥ **ID:** {char_id}\n➥ **Rarity:** {r_name}")
     except:
         await p_msg.edit_text("❌ **Format:** `/gupload Name-Anime-RarityID` (In Photo Caption)")
 
