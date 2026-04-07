@@ -1,7 +1,7 @@
-import random, time
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+import random
+from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, filters
-from shivu import application, collection, user_collection, group_totals, user_totals, RARITY_MAP
+from shivu import application, collection, user_collection, group_totals
 
 last_characters = {}
 message_counts = {}
@@ -11,8 +11,6 @@ async def message_counter(update: Update, context: CallbackContext):
     if not update.message or not update.message.text: return
     
     message_counts[chat_id] = message_counts.get(chat_id, 0) + 1
-    
-    # Auto spawn every 50 messages
     if message_counts[chat_id] >= 50:
         message_counts[chat_id] = 0
         all_chars = await collection.find({}).to_list(length=None)
@@ -22,8 +20,7 @@ async def message_counter(update: Update, context: CallbackContext):
         last_characters[chat_id] = char
         await context.bot.send_photo(
             chat_id=chat_id, photo=char['img_url'],
-            caption=f"❄️ **𝐀 𝐍𝐄𝐖 𝐂𝐇𝐀𝐑𝐀𝐂𝐓𝐄𝐑 𝐀𝐏𝐏𝐄𝐀𝐑𝐄𝐃!**\n━━━━━━━━━━━━━━━━━━━━\n💎 **Rarity:** {char['rarity']}\n\n𝗨𝘀𝗲 `/hunt [name]` 𝘁𝗼 𝗰𝗮𝘁𝗰𝗵!",
-            parse_mode='Markdown'
+            caption=f"❄️ **𝐀 𝐍𝐄𝐖 𝐂𝐇𝐀𝐑𝐀𝐂𝐓𝐄𝐑 𝐀𝐏𝐏𝐄𝐀𝐑𝐄𝐃!**\n━━━━━━━━━━━━━━━━━━━━\n💎 **Rarity:** {char['rarity']}\n\n𝗨𝘀𝗲 `/hunt [name]` 𝘁𝗼 𝗰𝗮𝘁𝗰𝗵! ⛄️"
         )
 
 async def hunt(update: Update, context: CallbackContext):
@@ -37,9 +34,8 @@ async def hunt(update: Update, context: CallbackContext):
         user_id = update.effective_user.id
         await user_collection.update_one({'id': user_id}, {'$push': {'characters': char}, '$set': {'first_name': update.effective_user.first_name}}, upsert=True)
         await group_totals.update_one({'group_id': chat_id}, {'$inc': {'count': 1}, '$set': {'group_name': update.effective_chat.title}}, upsert=True)
-        
         del last_characters[chat_id]
-        await update.message.reply_text(f"✅ **SUCCESSFUL HUNT!**\n\n⛄️ **{update.effective_user.first_name}** captured **{char['name']}**!")
+        await update.message.reply_text(f"✅ **CORRECT!** {update.effective_user.first_name} caught **{char['name']}**!")
     else:
         await update.message.reply_text("❌ Wrong name! Try again.")
 
