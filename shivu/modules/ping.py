@@ -1,18 +1,13 @@
 import time
-
 from telegram import Update
-from telegram.ext import CommandHandler, CallbackContext
+from telegram.ext import CommandHandler, ContextTypes
+from shivu import application
 
-from shivu import application, sudo_users
-
-async def ping(update: Update, context: CallbackContext) -> None:
-    if str(update.effective_user.id) not in sudo_users:
-        update.message.reply_text("Nouu.. its Sudo user's Command..")
-        return
+async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
     start_time = time.time()
-    message = await update.message.reply_text('Pong!')
+    message = await update.message.reply_text("❄️ Pinging...")
     end_time = time.time()
-    elapsed_time = round((end_time - start_time) * 1000, 3)
-    await message.edit_text(f'Pong! {elapsed_time}ms')
+    ms = (end_time - start_time) * 1000
+    await message.edit_text(f"⛄️ **Pong!**\n⏱ Speed: `{int(ms)}ms`")
 
 application.add_handler(CommandHandler("ping", ping))
